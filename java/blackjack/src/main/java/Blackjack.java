@@ -1,12 +1,13 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class Blackjack {
+
+    Map<String, Integer> cards = new HashMap<>();
     public int parseCard(String card) {
 
-        Map<String, Integer> cards = new HashMap<>();
-
-        cards.put("ás", 11);
+        cards.put("ace", 11);
         cards.put("two", 2);
         cards.put("three", 3);
         cards.put("four", 4);
@@ -29,20 +30,52 @@ public class Blackjack {
                 break;
             }
         }
-        System.out.println(numberCard);
         return numberCard;
     }
 
     public boolean isBlackjack(String card1, String card2) {
-        throw new UnsupportedOperationException("Please implement the Blackjack.isBlackjack method");
+
+        Predicate<Integer> isBlackJack = s1 -> s1 == 21;
+        int valueCard1 = 0;
+        int valueCard2 = 0;
+
+        for (String key : cards.keySet()) {
+            if (key.contains(card1)) {
+                valueCard1 = cards.get(key);
+            }
+            if (key.contains(card2)) {
+                valueCard2 = cards.get(key);
+            }
+        }
+
+        if (isBlackJack.test(valueCard1 + valueCard2))
+            return true;
+                return false;
+
     }
 
     public String largeHand(boolean isBlackjack, int dealerScore) {
-        throw new UnsupportedOperationException("Please implement the Blackjack.largeHand method");
-    }
+
+        if (isBlackjack && dealerScore < 10) {
+            return "W";
+        } else if (isBlackjack && dealerScore == 11){
+            return "P";
+        } else {
+            return "S";
+        }
+    };
 
     public String smallHand(int handScore, int dealerScore) {
-        throw new UnsupportedOperationException("Please implement the Blackjack.smallHand method");
+
+        if (handScore >= 17) {
+            return "S";
+        } else if (handScore <= 11) {
+            return "H";
+        } else if ((handScore >= 12 || handScore <= 16) && dealerScore <= 7) {
+            return "H";
+        } else {
+            return "W";
+        }
     }
 
     // FirstTurn returns the semi-optimal decision for the first turn, given the cards of the player and the dealer.
@@ -63,7 +96,7 @@ public class Blackjack {
 
         Blackjack blackjack = new Blackjack();
 
-        blackjack.parseCard("other");
+        blackjack.firstTurn("eight", "three", "four");
 
     }
 }
