@@ -1,66 +1,78 @@
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public class Blackjack {
 
-    Map<String, Integer> cards = new HashMap<>();
+    int valueCard1 = 0;
+    int valueCard2 = 0;
+
+    double resultAce = 0;
     public int parseCard(String card) {
 
-        cards.put("ace", 11);
-        cards.put("two", 2);
-        cards.put("three", 3);
-        cards.put("four", 4);
-        cards.put("five", 5);
-        cards.put("six", 6);
-        cards.put("seven", 7);
-        cards.put("eight", 8);
-        cards.put("nine", 9);
-        cards.put("ten", 10);
-        cards.put("jack", 10);
-        cards.put("queen", 10);
-        cards.put("king", 10);
-        cards.put("other", 0);
-
-        int numberCard = 0;
-
-        for (String key : cards.keySet()) {
-            if (key.contains(card)) {
-                numberCard = cards.get(key);
-                break;
-            }
+        if (card.equals("ace")) {
+            return 11;
+        } else if (card.equals("two")) {
+            return 2;
+        } else if (card.equals("three")) {
+            return 3;
+        } else if (card.equals("four")) {
+            return 4;
+        } else if (card.equals("five")) {
+            return 5;
+        } else if (card.equals("six")) {
+            return 6;
+        } else if (card.equals("seven")) {
+            return 7;
+        } else if (card.equals("eight")) {
+            return 8;
+        } else if (card.equals("nine")) {
+            return 9;
+        } else if (card.equals("ten")) {
+            return 10;
+        } else if (card.equals("jack")) {
+            return 10;
+        } else if (card.equals("queen")) {
+            return 10;
+        } else if (card.equals("king")) {
+            return 10;
+        } else {
+            return 0;
         }
-        return numberCard;
     }
 
     public boolean isBlackjack(String card1, String card2) {
 
         Predicate<Integer> isBlackJack = s1 -> s1 == 21;
-        int valueCard1 = 0;
-        int valueCard2 = 0;
 
-        for (String key : cards.keySet()) {
-            if (key.contains(card1)) {
-                valueCard1 = cards.get(key);
-            }
-            if (key.contains(card2)) {
-                valueCard2 = cards.get(key);
-            }
+        if (card1.equals("ace") && card2.equals("ace")) {
+            valueCard1 = parseCard(card1);
+            valueCard2 = parseCard(card2);
+            resultAce = valueCard1 / valueCard2;
+        } else {
+            valueCard1 = parseCard(card1);
+            valueCard2 = parseCard(card2);
         }
 
-        if (isBlackJack.test(valueCard1 + valueCard2))
-            return true;
-                return false;
+        boolean result = isBlackJack.test(valueCard1 + valueCard2);
 
+        return result;
     }
+
+/*
+permanecer/ficar - STAND (S)
+bater - HIT (H)
+divisao - SPLIT (P)
+ganhar automaticamente - Automatically win (W)
+*/
 
     public String largeHand(boolean isBlackjack, int dealerScore) {
 
-        if (isBlackjack && dealerScore < 10) {
+        if (isBlackjack && !(dealerScore > 9 && dealerScore <= 11)) {
             return "W";
-        } else if (isBlackjack && dealerScore == 11){
+        } else if (isBlackjack && dealerScore == 11) {
+            return "S";
+        } else if(resultAce != 0) {
             return "P";
-        } else {
+        }else {
             return "S";
         }
     };
@@ -71,8 +83,10 @@ public class Blackjack {
             return "S";
         } else if (handScore <= 11) {
             return "H";
-        } else if ((handScore >= 12 || handScore <= 16) && dealerScore <= 7) {
+        } else if ((handScore >= 12 && handScore <= 16) && dealerScore >= 7) {
             return "H";
+        } else if (handScore >= 12 && handScore <= 16) {
+            return "S";
         } else {
             return "W";
         }
@@ -96,7 +110,7 @@ public class Blackjack {
 
         Blackjack blackjack = new Blackjack();
 
-        blackjack.firstTurn("eight", "three", "four");
+        blackjack.firstTurn("ace", "ace", "ace");
 
     }
 }
